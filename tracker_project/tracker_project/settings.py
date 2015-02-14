@@ -111,3 +111,5 @@ BOWER_INSTALLED_APPS = (
 TEMPLATE_DIRS = (
     os.path.normpath(os.path.join(BASE_DIR, 'templates')),
 )
+
+LOGIN_REDIRECT_URL = '/'
