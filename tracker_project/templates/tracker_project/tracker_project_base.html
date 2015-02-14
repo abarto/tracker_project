@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Tracker{% endblock %}
+
+{% block content %}
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Tracker</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="#"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;Incidents</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;Areas of Interest</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+{% block tracker_project_content %}{% endblock %}
+
+{% endblock %}

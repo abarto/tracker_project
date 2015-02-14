@@ -10,7 +10,8 @@
         <div class="panel panel-default">
             <div class="panel-heading">Tracker - Log in</div>
             <div class="panel-body">
-                <form method="post" action="">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="id_username">Username:</label>
                         <input id="id_username" maxlength="254" name="username" type="text" class="form-control"/>
