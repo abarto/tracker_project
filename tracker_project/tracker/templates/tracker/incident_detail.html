@@ -1,0 +1,34 @@
+{% extends "tracker_project/tracker_project_base.html" %}
+
+{% load staticfiles %}
+
+{% block tracker_title %} - Incident{% endblock %}
+
+{% block tracker_project_content %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Incident</h3>
+        </div>
+        <div class="panel-body">
+            <a class="btn btn-default btn-xs pull-right" href="{% url 'tracker:incident-update' pk=object.pk %}" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Update Incident</a>
+            <dl class="dl-horizontal">
+                <dt>Name</dt>
+                <dd>{{ object.name }}</dd>
+                <dt>Severity</dt>
+                <dd><span class="label {% if object.severity == 'UR' %}label-danger{% elif object.severity == 'IN' %}label-info{% else %}label-default{% endif %}">{{ object.get_severity_display }}</span></dd>
+                <dt>Created</dt>
+                <dd>{{ object.created }}</dd>
+                <dt>Description</dt>
+                <dd>{{ object.description }}</dd>
+                <dt>Closed</dt>
+                <dd>{{ object.closed|yesno|capfirst }}</dd>
+                <dt>Location</dt>
+                <dd>
+                    <img class="img-rounded" src="https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center={{ object.location.y }},{{ object.location.x }}&markers=color:red|label:Location|{{ object.location.y }},{{ object.location.x }}" />
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %}

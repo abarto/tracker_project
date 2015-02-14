@@ -1,0 +1,68 @@
+{% extends "tracker_project/tracker_project_base.html" %}
+
+{% load staticfiles %}
+
+{% block tracker_title %} - Incidents{% endblock %}
+
+{% block tracker_project_content %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Incidents</h3>
+        </div>
+        <div class="panel-body">
+            <a class="btn btn-default btn-xs pull-right" href="{% url 'tracker:incident-create' %}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add Incident</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Created</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Location</th>
+                        <th>Closed</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for incident in object_list %}
+                    <tr>
+                        <td>{{ incident.created }}</td>
+                        <td><a href="{% url 'tracker:incident-detail' pk=incident.pk %}">{{ incident.name }}</a></td>
+                        <td><span class="label {% if incident.severity == 'UR' %}label-danger{% elif incident.severity == 'IN' %}label-info{% else %}label-default{% endif %}">{{ incident.get_severity_display }}</span></td>
+                        <td><a class="incident-location" href="#" data-name="{{ incident.name }}" data-longitude="{{ incident.location.y }}" data-latitude="{{ incident.location.x }}">Longitude: {{ incident.location.y|floatformat:4 }}, Latitude: {{ incident.location.x|floatformat:4 }}</a></td>
+                        <td>
+                            {% if incident.closed %}
+                                <span class="glyphicon glyphicon-checked" aria-hidden="true"></span>
+                            {% else %}
+                                <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'tracker:incident-detail' pk=incident.pk %}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                            <a href="{% url 'tracker:incident-update' pk=incident.pk %}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                            <a href="{% url 'tracker:incident-delete' pk=incident.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="incidentLocationModal" tabindex="-1" role="dialog" aria-labelledby="incidentLocationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="incidentLocationModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <img class="img-rounded center-block" src="" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
