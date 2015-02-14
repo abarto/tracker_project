@@ -26,3 +26,9 @@ class Incident(models.Model):
     closed = models.BooleanField(default=False)
     location = models.PointField()
     created = models.DateTimeField(editable=False, auto_now_add=True)
+
+
+class AreaOfInterest(models.Model):
+    name = models.CharField(max_length=150)
+    severity = models.CharField(max_length=2, choices=Incident.SEVERITY_CHOICES, default=Incident.MEDIUM)
+    polygon = models.PolygonField()
