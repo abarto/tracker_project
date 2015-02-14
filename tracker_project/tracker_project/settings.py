@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'djangobower',
     'tracker'
 )
 
@@ -87,3 +88,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "djangobower.finders.BowerFinder"
+)
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "assets"),
+)
+
+
+# bower (js packet manager)
+BOWER_COMPONENTS_ROOT = os.path.join(os.path.abspath(BASE_DIR), 'components')
+
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'bootstrap'
+)
+
+TEMPLATE_DIRS = (
+    os.path.normpath(os.path.join(BASE_DIR, 'templates')),
+)
