@@ -43,6 +43,10 @@
                             <a href="{% url 'tracker:incident-delete' pk=incident.pk %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                         </td>
                     </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No incidents defined.</td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
