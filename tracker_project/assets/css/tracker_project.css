@@ -5,3 +5,9 @@
     display: flex;
     align-items: center;
 }
+
+.incident-form-map-canvas {
+    width: 500px;
+    height: 500px;
+    margin-bottom: 10px;
+}

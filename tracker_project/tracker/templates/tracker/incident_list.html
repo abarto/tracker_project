@@ -32,7 +32,7 @@
                         <td><a class="incident-location" href="#" data-name="{{ incident.name }}" data-longitude="{{ incident.location.y }}" data-latitude="{{ incident.location.x }}">Longitude: {{ incident.location.y|floatformat:4 }}, Latitude: {{ incident.location.x|floatformat:4 }}</a></td>
                         <td>
                             {% if incident.closed %}
-                                <span class="glyphicon glyphicon-checked" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
                             {% else %}
                                 <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
                             {% endif %}
@@ -57,7 +57,7 @@
                 <h4 class="modal-title" id="incidentLocationModalLabel"></h4>
             </div>
             <div class="modal-body">
-                <img class="img-rounded center-block" src="" />
+                <img class="center-block" src="" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -65,4 +65,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/incident_list.js' %}"></script>
 {% endblock %}

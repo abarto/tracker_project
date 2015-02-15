@@ -25,7 +25,7 @@
                 <dd>{{ object.closed|yesno|capfirst }}</dd>
                 <dt>Location</dt>
                 <dd>
-                    <img class="img-rounded" src="https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center={{ object.location.y }},{{ object.location.x }}&markers=color:red|label:Location|{{ object.location.y }},{{ object.location.x }}" />
+                    <img src="https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center={{ object.location.x }},{{ object.location.y }}&markers=color:red|label:Location|{{ object.location.x }},{{ object.location.y }}" />
                 </dd>
             </dl>
         </div>

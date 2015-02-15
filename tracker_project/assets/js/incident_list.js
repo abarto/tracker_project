@@ -10,7 +10,7 @@ $(function() {
         $incidentLocationModel.find("#incidentLocationModalLabel").text(name);
         $incidentLocationModel.find("img").attr(
             "src",
-            "https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center=" + longitude + "," + latitude +"&markers=color:red|label:Location|" + longitude + "," + latitude
+            "https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center=" + latitude + "," + longitude +"&markers=color:red|label:Location|" + latitude + "," + longitude
         );
 
         $incidentLocationModel.modal('show');

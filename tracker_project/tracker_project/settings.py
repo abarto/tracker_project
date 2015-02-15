@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'djangobower',
+    'crispy_forms',
     'tracker'
 )
 
@@ -113,3 +114,5 @@ TEMPLATE_DIRS = (
 )
 
 LOGIN_REDIRECT_URL = '/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

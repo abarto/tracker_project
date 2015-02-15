@@ -1,0 +1,34 @@
+{% extends "tracker_project/tracker_project_base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block tracker_title %} - Incident{% endblock %}
+
+{% block tracker_project_content %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Incident</h3>
+        </div>
+        <div class="panel-body">
+            <div id="map-canvas" class="incident-form-map-canvas center-block"></div>
+            {% crispy form %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript" src="{% static 'js/incident_form.js' %}"></script>
+    <script type="text/javascript">
+        $(function() {
+            {% if form.location_x.value and form.location_y.value %}
+            initializeMap({{ form.location_x.value }}, {{ form.location_y.value }}, 12);
+            {% else %}
+            initializeMap(0, 0, 4);
+            {% endif %}
+        });
+    </script>
+{% endblock %}
