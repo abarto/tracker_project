@@ -86,15 +86,15 @@ area_of_interest_detail = AreaOfInterestDetailView.as_view()
 
 
 class AreaOfInterestCreateView(LoginRequiredMixin, CreateView):
-    model = Incident
+    model = AreaOfInterest
 area_of_interest_create = AreaOfInterestCreateView.as_view()
 
 
 class AreaOfInterestUpdateView(LoginRequiredMixin, UpdateView):
-    model = Incident
+    model = AreaOfInterest
 area_of_interest_update = AreaOfInterestUpdateView.as_view()
 
 
 class AreaOfInterestDeleteView(LoginRequiredMixin, DeleteView):
-    model = Incident
+    model = AreaOfInterest
 area_of_interest_delete = AreaOfInterestDeleteView.as_view()
