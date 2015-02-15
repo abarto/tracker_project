@@ -1,6 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geos import Point
 from django.core.urlresolvers import reverse_lazy
@@ -20,6 +19,11 @@ class LoginRequiredMixin(object):
         return login_required(view)
 
 
+class IncidentListOnSuccessMixin(object):
+    def get_success_url(self):
+        return reverse_lazy('tracker:incident-list')
+
+
 class IncidentListView(LoginRequiredMixin, ListView):
     queryset = Incident.objects.all().order_by('-created')
 incident_list = IncidentListView.as_view()
@@ -30,7 +34,7 @@ class IncidentDetailView(LoginRequiredMixin, DetailView):
 incident_detail = IncidentDetailView.as_view()
 
 
-class IncidentCreateView(LoginRequiredMixin, CreateView):
+class IncidentCreateView(LoginRequiredMixin, IncidentListOnSuccessMixin, CreateView):
     model = Incident
     form_class = IncidentForm
 
@@ -40,13 +44,10 @@ class IncidentCreateView(LoginRequiredMixin, CreateView):
         )
 
         return super(IncidentCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('tracker:incident-list')
 incident_create = IncidentCreateView.as_view()
 
 
-class IncidentUpdateView(LoginRequiredMixin, UpdateView):
+class IncidentUpdateView(LoginRequiredMixin, IncidentListOnSuccessMixin, UpdateView):
     model = Incident
     form_class = IncidentForm
 
@@ -64,13 +65,10 @@ class IncidentUpdateView(LoginRequiredMixin, UpdateView):
         )
 
         return super(IncidentUpdateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('tracker:incident-list')
 incident_update = IncidentUpdateView.as_view()
 
 
-class IncidentDeleteView(LoginRequiredMixin, DeleteView):
+class IncidentDeleteView(LoginRequiredMixin, IncidentListOnSuccessMixin, DeleteView):
     model = Incident
 incident_delete = IncidentDeleteView.as_view()
 

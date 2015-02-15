@@ -1,0 +1,29 @@
+{% extends "tracker_project/tracker_project_base.html" %}
+
+{% load staticfiles %}
+
+{% block tracker_title %} - Incident{% endblock %}
+
+{% block tracker_project_content %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Delete Incident</h3>
+        </div>
+        <div class="panel-body">
+            <form action="{% url 'tracker:incident-delete' pk=object.pk %}">
+                {% csrf_token %}
+                <div class="alert alert-danger">
+                    <div class="row text-center">
+                        <h4>You are about to delete incident "{{ object.name }}". Are you sure?</h4>
+                    </div>
+                    <div class="row text-center">
+                        <a class="btn btn-default btn-md" href="{% url 'tracker:incident-list' %}">Cancel</a>
+                        <input class="btn btn-danger btn-md" type="submit" value="Confirm" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
