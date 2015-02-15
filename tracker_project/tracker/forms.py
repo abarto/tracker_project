@@ -9,8 +9,7 @@ from .models import Incident
 
 
 class IncidentForm(forms.ModelForm):
-    location_x = forms.DecimalField(widget=forms.HiddenInput)
-    location_y = forms.DecimalField(widget=forms.HiddenInput)
+    location_geojson = forms.CharField(widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         super(IncidentForm, self).__init__(*args, **kwargs)

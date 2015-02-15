@@ -24,11 +24,7 @@
     <script type="text/javascript" src="{% static 'js/incident_form.js' %}"></script>
     <script type="text/javascript">
         $(function() {
-            {% if form.location_x.value and form.location_y.value %}
-            initializeMap({{ form.location_x.value }}, {{ form.location_y.value }}, 12);
-            {% else %}
-            initializeMap(0, 0, 4);
-            {% endif %}
+            initializeMap();
         });
     </script>
 {% endblock %}

@@ -1,27 +1,39 @@
 var map;
 var marker;
 
-function setLocation(latLng) {
-    $("#id_location_x").val(latLng.lat());
-    $("#id_location_y").val(latLng.lng());
+function fromLatLng(latLng) {
+    return {
+        "type": "Point",
+        "coordinates": [
+            latLng.lat(),
+            latLng.lng(),
+        ]
+    }
 }
 
-function initializeMap(locationLatitude, locationLongitude, zoomLevel) {
-    var locationLatlng = new google.maps.LatLng(locationLatitude, locationLongitude);
+function toLatLng(geoJsonFeature) {
+    return new google.maps.LatLng(
+        locationGeoJson.coordinates[0],
+        locationGeoJson.coordinates[1]
+    );
+}
+
+function initializeMap() {
+    locationGeoJson = $.parseJSON($("#id_location_geojson").val());
+
+    var locationLatLng = toLatLng(locationGeoJson);
 
     var mapOptions = {
-        center: locationLatlng,
+        center: locationLatLng,
         mapTypeId: google.maps.MapTypeId.HYBRID,
-        zoom: zoomLevel
+        zoom: 8
     };
 
     map = new google.maps.Map($("#map-canvas").get(0), mapOptions);
     marker = new google.maps.Marker({
-        position: locationLatlng,
-        map: map,
+        position: locationLatLng,
+        map: map
     });
-
-    setLocation(marker.position);
 
     var drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.MARKER,
@@ -37,8 +49,8 @@ function initializeMap(locationLatitude, locationLongitude, zoomLevel) {
 
     google.maps.event.addListener(drawingManager, 'markercomplete', function(event_marker) {
         marker.setMap(null);
-        marker = event_marker;
 
-        setLocation(marker.position);
+        marker = event_marker;
+        $("#id_location_geojson").val(JSON.stringify(fromLatLng(marker.position)));
     });
 }
