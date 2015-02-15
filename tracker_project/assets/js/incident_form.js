@@ -1,7 +1,7 @@
 var map;
 var marker;
 
-function initializeMap() {
+$(window).load(function() {
     var mapOptions = {
         center: new google.maps.LatLng(0, 0),
         mapTypeId: google.maps.MapTypeId.HYBRID,
@@ -42,4 +42,4 @@ function initializeMap() {
         marker = event_marker;
         $("#id_location_geojson").val(JSON.stringify(fromLatLng(marker.position)));
     });
-}
+});
