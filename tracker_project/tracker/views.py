@@ -74,7 +74,7 @@ incident_delete = IncidentDeleteView.as_view()
 
 
 class AreaOfInterestListView(LoginRequiredMixin, ListView):
-    queryset = AreaOfInterest.objects.all().order_by('-created')
+    model = AreaOfInterest
 area_of_interest_list = AreaOfInterestListView.as_view()
 
 
