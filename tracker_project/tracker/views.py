@@ -6,9 +6,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from json import loads, dumps
 
-from .forms import IncidentForm
+from .forms import IncidentForm, AreaOfInterestForm
 from .models import Incident, AreaOfInterest
 
 
@@ -24,6 +23,11 @@ class IncidentListOnSuccessMixin(object):
         return reverse_lazy('tracker:incident-list')
 
 
+class AreaOfInterestListOnSuccessMixin(object):
+    def get_success_url(self):
+        return reverse_lazy('tracker:area-of-interest-list')
+
+
 class IncidentListView(LoginRequiredMixin, ListView):
     queryset = Incident.objects.all().order_by('-created')
 incident_list = IncidentListView.as_view()
@@ -37,13 +41,6 @@ incident_detail = IncidentDetailView.as_view()
 class IncidentCreateView(LoginRequiredMixin, IncidentListOnSuccessMixin, CreateView):
     model = Incident
     form_class = IncidentForm
-
-    def get_initial(self):
-        initial = super(IncidentCreateView, self).get_initial()
-
-        initial['location_geojson'] = Point(0, 0).geojson
-
-        return initial
 
     def form_valid(self, form):
         form.instance.location = GEOSGeometry(form.cleaned_data['location_geojson'])
@@ -85,16 +82,35 @@ class AreaOfInterestDetailView(LoginRequiredMixin, DetailView):
 area_of_interest_detail = AreaOfInterestDetailView.as_view()
 
 
-class AreaOfInterestCreateView(LoginRequiredMixin, CreateView):
+class AreaOfInterestCreateView(LoginRequiredMixin, AreaOfInterestListOnSuccessMixin, CreateView):
     model = AreaOfInterest
+    form_class = AreaOfInterestForm
+
+    def form_valid(self, form):
+        form.instance.polygon = GEOSGeometry(form.cleaned_data['polygon_geojson'])
+
+        return super(AreaOfInterestCreateView, self).form_valid(form)
 area_of_interest_create = AreaOfInterestCreateView.as_view()
 
 
-class AreaOfInterestUpdateView(LoginRequiredMixin, UpdateView):
+class AreaOfInterestUpdateView(LoginRequiredMixin, AreaOfInterestListOnSuccessMixin, UpdateView):
     model = AreaOfInterest
+    form_class = AreaOfInterestForm
+
+    def get_initial(self):
+        initial = super(AreaOfInterestUpdateView, self).get_initial()
+
+        initial['polygon_geojson'] = self.get_object().polygon.geojson
+
+        return initial
+
+    def form_valid(self, form):
+        form.instance.polygon = GEOSGeometry(form.cleaned_data['polygon_geojson'])
+
+        return super(AreaOfInterestUpdateView, self).form_valid(form)
 area_of_interest_update = AreaOfInterestUpdateView.as_view()
 
 
-class AreaOfInterestDeleteView(LoginRequiredMixin, DeleteView):
+class AreaOfInterestDeleteView(LoginRequiredMixin, AreaOfInterestListOnSuccessMixin, DeleteView):
     model = AreaOfInterest
 area_of_interest_delete = AreaOfInterestDeleteView.as_view()

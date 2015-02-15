@@ -3,17 +3,18 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
-{% block tracker_title %} - Incident{% endblock %}
+{% block tracker_title %} - Area of Interest{% endblock %}
 
 {% block tracker_project_content %}
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Incident</h3>
+            <h3 class="panel-title">Area of Interest</h3>
         </div>
         <div class="panel-body">
-            <div class="alert {% if form.location_geojson.errors %}alert-danger{% else %}alert-info{% endif %}">Place a marker on the map below to define an incident.</div>
-            <div id="map-canvas" class="incident-form-map-canvas center-block"></div>
+            {{ form.errors }}
+            <div class="alert {% if form.polygon_geojson.errors %}alert-danger{% else %}alert-info{% endif %}">Draw a polygon on the map below to define an area of interest.</div>
+            <div id="map-canvas" class="area-of-interest-form-map-canvas center-block"></div>
             {% crispy form %}
         </div>
     </div>
@@ -23,7 +24,7 @@
 {% block extra_js %}
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
     <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/incident_form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/areaofinterest_form.js' %}"></script>
     <script type="text/javascript">
         $(function() {
             initializeMap();
