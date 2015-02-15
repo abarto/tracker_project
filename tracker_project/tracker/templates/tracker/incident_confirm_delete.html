@@ -11,7 +11,7 @@
             <h3 class="panel-title">Delete Incident</h3>
         </div>
         <div class="panel-body">
-            <form action="{% url 'tracker:incident-delete' pk=object.pk %}">
+            <form action="{% url 'tracker:incident-delete' pk=object.pk %}" method="post">
                 {% csrf_token %}
                 <div class="alert alert-danger">
                     <div class="row text-center">
