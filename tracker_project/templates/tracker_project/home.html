@@ -5,4 +5,20 @@
 {% block tracker_title %} - Home{% endblock %}
 
 {% block tracker_project_content %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Incidents and Areas of Interest</h3>
+        </div>
+        <div class="panel-body">
+            <div id="map-canvas" class="home-map-canvas center-block"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
+    <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
 {% endblock %}

@@ -12,6 +12,11 @@
     margin-bottom: 10px;
 }
 
+.home-map-canvas {
+    width: 100%;
+    height: 500px;
+}
+
 .area-of-interest-form-map-canvas {
     width: 500px;
     height: 500px;
