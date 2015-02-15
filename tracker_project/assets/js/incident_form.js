@@ -22,11 +22,18 @@ function initializeMap(locationLatitude, locationLongitude, zoomLevel) {
     var mapOptions = {
         center: locationLatlng,
         mapTypeId: google.maps.MapTypeId.HYBRID,
-        zoom: zoomLevel
+        zoom: zoomLevel,
+        draggableCursor: 'crosshair'
     };
 
-    var infoWindow = new google.maps.InfoWindow({
-        content: ''
+    var $placeMarkerButton = $("<a class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-map-marker\" aria-hidden=\"true\"></span>&nbsp;Place marker here</a>");
+    $placeMarkerButton.click(function() {
+        infoWindow.close();
+        setMarker(infoWindow.getPosition(), map);
+    });
+
+    infoWindow = new google.maps.InfoWindow({
+        content: $placeMarkerButton.get(0)
     });
 
     map = new google.maps.Map($("#map-canvas").get(0), mapOptions);
@@ -38,13 +45,6 @@ function initializeMap(locationLatitude, locationLongitude, zoomLevel) {
     google.maps.event.addListener(map, "rightclick", function(event) {
         var latLng = event.latLng;
 
-        $infoWindowContent = $("<div><span>Latitude: " + latLng.lat() + "</span><br/><span>Longitude: " + latLng.lng() + "</span><br/>" + "<a class=\"btn btn-default btn-xs btn-block\">Place marker</a></div>");
-        $infoWindowContent.find("a").click(function() {
-            infoWindow.close();
-            setMarker(infoWindow.getPosition(), map);
-        });
-
-        infoWindow.setContent($infoWindowContent.get(0));
         infoWindow.setPosition(event.latLng);
 
         infoWindow.open(map);
