@@ -21,4 +21,8 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
     <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
+    <script type="text/javascript">
+        var incidentFeatureCollectionUrl = "{% url 'tracker:incident-feature-collection' %}";
+        var areaOfInterestFeatureCollectionUrl = "{% url 'tracker:area-of-interest-feature-collection' %}";
+    </script>
 {% endblock %}

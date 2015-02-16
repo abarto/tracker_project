@@ -6,4 +6,7 @@ $(window).load(function() {
     };
 
     map = new google.maps.Map($("#map-canvas").get(0), mapOptions);
+
+    map.data.loadGeoJson(incidentFeatureCollectionUrl);
+    map.data.loadGeoJson(areaOfInterestFeatureCollectionUrl);
 });

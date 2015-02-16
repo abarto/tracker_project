@@ -1,21 +1,16 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.gis.geos import GEOSGeometry, Point
+from braces.views import LoginRequiredMixin, JSONResponseMixin
+from django.contrib.gis.geos import GEOSGeometry
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
+from geojson import FeatureCollection
 
 from .forms import IncidentForm, AreaOfInterestForm
 from .models import Incident, AreaOfInterest
-
-
-class LoginRequiredMixin(object):
-    @classmethod
-    def as_view(cls, **initkwargs):
-        view = super(LoginRequiredMixin, cls).as_view(**initkwargs)
-        return login_required(view)
 
 
 class IncidentListOnSuccessMixin(object):
@@ -83,7 +78,7 @@ class AreaOfInterestDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(AreaOfInterestDetailView, self).get_context_data(**kwargs)
 
-        context['path_expression'] = '|'.join('{x},{y}'.format(x=x, y=y) for x, y in self.get_object().polygon[0])
+        context['path_expression'] = '|'.join('{y},{x}'.format(x=x, y=y) for x, y in self.get_object().polygon[0])
 
         return context
 
@@ -122,3 +117,23 @@ area_of_interest_update = AreaOfInterestUpdateView.as_view()
 class AreaOfInterestDeleteView(LoginRequiredMixin, AreaOfInterestListOnSuccessMixin, DeleteView):
     model = AreaOfInterest
 area_of_interest_delete = AreaOfInterestDeleteView.as_view()
+
+
+class IncidentFeatureCollectionView(LoginRequiredMixin, JSONResponseMixin, View):
+    def get(self, request, *args, **kwargs):
+        features = [incident.geojson_feature for incident in Incident.objects.filter(closed=False)]
+        feature_collection = FeatureCollection(features)
+
+        return self.render_json_response(feature_collection)
+incident_feature_collection = IncidentFeatureCollectionView.as_view()
+
+
+class AreaOfInterestFeatureCollectionView(LoginRequiredMixin, JSONResponseMixin, View):
+    def get(self, request, *args, **kwargs):
+        features = [
+            area_of_interest.geojson_feature for area_of_interest in AreaOfInterest.objects.all()
+        ]
+        feature_collection = FeatureCollection(features)
+
+        return self.render_json_response(feature_collection)
+area_of_interest_feature_collection = AreaOfInterestFeatureCollectionView.as_view()
