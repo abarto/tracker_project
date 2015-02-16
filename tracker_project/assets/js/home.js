@@ -9,4 +9,10 @@ $(window).load(function() {
 
     map.data.loadGeoJson(incidentFeatureCollectionUrl);
     map.data.loadGeoJson(areaOfInterestFeatureCollectionUrl);
+
+    map.data.setStyle(function(feature) {
+        return {
+            title: feature.getProperty('title')
+        };
+    });
 });

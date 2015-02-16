@@ -35,6 +35,7 @@ class Incident(models.Model):
             id='Incident:{id}'.format(id=self.id),
             properties={
                 'name': self.name,
+                'title': '({y}, {x}) - {name}'.format(x=self.location.x, y=self.location.y, name=self.name),
                 'description': self.description,
                 'severity': self.get_severity_display(),
                 'created': str(self.created),
@@ -55,6 +56,7 @@ class AreaOfInterest(models.Model):
             id='AreaOfInterest:{id}'.format(id=self.id),
             properties={
                 'name': self.name,
+                'title': '{name} ({severity})'.format(name=self.name, severity=self.get_severity_display()),
                 'severity': self.get_severity_display()
             }
         )
