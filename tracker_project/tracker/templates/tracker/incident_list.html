@@ -29,7 +29,7 @@
                         <td>{{ incident.created }}</td>
                         <td><a href="{% url 'tracker:incident-detail' pk=incident.pk %}">{{ incident.name }}</a></td>
                         <td><span class="label {% if incident.severity == 'UR' %}label-danger{% elif incident.severity == 'IN' %}label-info{% else %}label-default{% endif %}">{{ incident.get_severity_display }}</span></td>
-                        <td><a class="incident-location" href="#" data-name="{{ incident.name }}" data-longitude="{{ incident.location.y }}" data-latitude="{{ incident.location.x }}">Longitude: {{ incident.location.y|floatformat:4 }}, Latitude: {{ incident.location.x|floatformat:4 }}</a></td>
+                        <td><a class="incident-location" href="#" data-name="{{ incident.name }}" data-longitude="{{ incident.location.x }}" data-latitude="{{ incident.location.y }}">Longitude: {{ incident.location.x|floatformat:4 }}, Latitude: {{ incident.location.y|floatformat:4 }}</a></td>
                         <td>
                             {% if incident.closed %}
                                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
