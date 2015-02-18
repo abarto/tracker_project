@@ -3,15 +3,23 @@ from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from kombu import Connection
+from kombu import BrokerConnection
+from kombu.common import maybe_declare
+from kombu.pools import producers
 
 from .models import Incident, AreaOfInterest
+from .queues import notifications_exchange
 
 
 def send_notification(notification):
-    with Connection(settings.AMPQ_URL) as connection:
-        simple_queue = connection.SimpleQueue('notifications')
-        simple_queue.put(notification)
+    with BrokerConnection(settings.AMPQ_URL) as connection:
+        with producers[connection].acquire(block=True) as producer:
+            maybe_declare(notifications_exchange, producer.channel)
+            producer.publish(
+                notification,
+                exchange='notifications',
+                routing_key='notifications'
+            )
 
 
 @receiver(post_save, sender=Incident)
@@ -45,6 +53,7 @@ def incident_post_save(sender, **kwargs):
                 ]
             ))
 
+
 @receiver(post_save, sender=AreaOfInterest)
 def area_of_interest_post_save(sender, **kwargs):
     send_notification(dict(
@@ -52,6 +61,7 @@ def area_of_interest_post_save(sender, **kwargs):
         created=kwargs['created'],
         feature=kwargs['instance'].geojson_feature
     ))
+
 
 @receiver(post_delete, sender=Incident)
 @receiver(post_delete, sender=AreaOfInterest)
