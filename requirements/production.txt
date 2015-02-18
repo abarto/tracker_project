@@ -4,3 +4,7 @@ psycopg2==2.6
 django-bower==5.0.2
 nodeenv==0.12.3
 django-crispy-forms==1.4.0
+gevent-socketio==0.3.6
+psycogreen==1.0
+django-braces==1.4.0
+kombu==3.0.24

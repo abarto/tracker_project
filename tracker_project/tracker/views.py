@@ -74,14 +74,6 @@ area_of_interest_list = AreaOfInterestListView.as_view()
 
 class AreaOfInterestDetailView(LoginRequiredMixin, DetailView):
     model = AreaOfInterest
-
-    def get_context_data(self, **kwargs):
-        context = super(AreaOfInterestDetailView, self).get_context_data(**kwargs)
-
-        context['path_expression'] = '|'.join('{y},{x}'.format(x=x, y=y) for x, y in self.get_object().polygon[0])
-
-        return context
-
 area_of_interest_detail = AreaOfInterestDetailView.as_view()
 
 

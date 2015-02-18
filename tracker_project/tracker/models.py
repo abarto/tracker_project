@@ -21,6 +21,14 @@ class Incident(models.Model):
         (INFO, 'Info'),
     )
 
+    ALERT_SEVERITIES = {
+        URGENT: (URGENT, HIGH, MEDIUM, LOW, INFO),
+        HIGH: (HIGH, MEDIUM, LOW, INFO),
+        MEDIUM: (MEDIUM, LOW, INFO),
+        LOW: (LOW, INFO),
+        INFO: (INFO,),
+    }
+
     name = models.CharField(max_length=150)
     description = models.TextField(max_length=1000)
     severity = models.CharField(max_length=2, choices=SEVERITY_CHOICES, default=MEDIUM)
@@ -29,17 +37,22 @@ class Incident(models.Model):
     created = models.DateTimeField(editable=False, auto_now_add=True)
 
     @property
+    def alert_severities(self):
+        return Incident.ALERT_SEVERITIES[self.severity]
+
+    @property
     def geojson_feature(self):
         return Feature(
             geometry=loads(self.location.geojson),
-            id='Incident:{id}'.format(id=self.id),
+            id='Incident:{pk}'.format(pk=self.pk),
             properties={
                 'name': self.name,
-                'title': '({y}, {x}) - {name}'.format(x=self.location.x, y=self.location.y, name=self.name),
                 'description': self.description,
                 'severity': self.get_severity_display(),
                 'created': str(self.created),
-                'closed': self.closed
+                'closed': self.closed,
+                'model': 'Incident',
+                'pk': self.pk
             }
         )
 
@@ -50,13 +63,18 @@ class AreaOfInterest(models.Model):
     polygon = models.PolygonField()
 
     @property
+    def path_expression(self):
+        return '|'.join('{y},{x}'.format(x=x, y=y) for x, y in self.polygon[0])
+
+    @property
     def geojson_feature(self):
         return Feature(
             geometry=loads(self.polygon.geojson),
-            id='AreaOfInterest:{id}'.format(id=self.id),
+            id='AreaOfInterest:{pk}'.format(pk=self.pk),
             properties={
                 'name': self.name,
-                'title': '{name} ({severity})'.format(name=self.name, severity=self.get_severity_display()),
-                'severity': self.get_severity_display()
+                'severity': self.get_severity_display(),
+                'model': 'AreaOfInterest',
+                'pk': self.pk
             }
         )

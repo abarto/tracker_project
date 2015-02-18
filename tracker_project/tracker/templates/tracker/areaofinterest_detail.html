@@ -22,7 +22,7 @@
                 <dd><span class="label {% if object.severity == 'UR' %}label-danger{% elif object.severity == 'IN' %}label-info{% else %}label-default{% endif %}">{{ object.get_severity_display }}</span></dd>
                 <dt>Location</dt>
                 <dd>
-                    <img class="area-of-interest-detail-img" src="https://maps.googleapis.com/maps/api/staticmap?size=512x512&maptype=hybrid&center={{ object.polygon.centroid.x }},{{ object.polygon.centroid.y }}&path=color:0xff0000ff|fillcolor:0xff000044|weight:5|{{ path_expression }}" />
+                    <img class="area-of-interest-detail-img" src="https://maps.googleapis.com/maps/api/staticmap?size=512x512&maptype=hybrid&center={{ object.polygon.centroid.x }},{{ object.polygon.centroid.y }}&path=color:0xff0000ff|fillcolor:0xff000044|weight:5|{{ object.path_expression }}" />
                 </dd>
             </dl>
         </div>

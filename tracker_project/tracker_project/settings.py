@@ -100,19 +100,27 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "assets"),
 )
 
+STATIC_ROOT = os.path.join(os.path.abspath(BASE_DIR), 'static')
 
-# bower (js packet manager)
+
 BOWER_COMPONENTS_ROOT = os.path.join(os.path.abspath(BASE_DIR), 'components')
 
 BOWER_INSTALLED_APPS = (
     'jquery',
-    'bootstrap'
+    'bootstrap',
+    'git@github.com:Automattic/socket.io-client.git#0.9',
 )
+
 
 TEMPLATE_DIRS = (
     os.path.normpath(os.path.join(BASE_DIR, 'templates')),
 )
 
+
 LOGIN_REDIRECT_URL = '/'
 
+
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+AMPQ_URL = 'amqp://guest:guest@localhost//'
