@@ -8,13 +8,14 @@ function buildAlertModalBodyHtml(notification) {
 
     var $title = $("<div class=\"alert alert-warning\" role=\"alert\"></div>");
     $title.html(
-        'Incident (' +
-        notification.feature.properties.severity +
-        '): <a href=\"' +
-        notification.url +
+        "<span class=\"glyphicon glyphicon-map-marker\" aria-hidden=\"true\"></span>&nbsp;Incident: <a class=\"alert-link\" href=\"" +
+        notification.feature.properties.url +
         "\">" +
         notification.feature.properties.name +
-        "</a>"
+        "</a>" +
+        "<span class=\"label label-default pull-right\">" +
+        notification.feature.properties.severity +
+        "</span>"
     )
 
     $alertModalBodyHtml.append($title);
@@ -27,8 +28,11 @@ function buildAlertModalBodyHtml(notification) {
         $list_group.append(
             $(
                 "<li class=\"list-group-item\">" +
+                "<span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span>&nbsp;<a href=\"" +
+                areas_of_interest[area_of_interest].url +
+                "\">" +
                 areas_of_interest[area_of_interest].name +
-                "<span class=\"label label-default pull-right\">" +
+                "</a><span class=\"label label-default pull-right\">" +
                 areas_of_interest[area_of_interest].severity +
                 "</span>" +
                 "</li>"
@@ -49,6 +53,25 @@ function showAlert(alertModalBodyHtml) {
     $alertModal.modal('show');
 }
 
+function buildInfoWindowContent(feature) {
+    var content =
+        "<div class=\"panel panel-default info-window-panel\">" +
+        "<div class=\"panel-heading\"><a href=\"" + feature.getProperty("url") + "\">" + feature.getId() + "</a></div>" +
+        "<div class=\"panel-body\">" +
+        "<dl>" +
+        "<dt>Model</dt>" +
+        "<dd>" + feature.getProperty("model") + "</dd>" +
+        "<dt>Name</dt>" +
+        "<dd>" + feature.getProperty("name") + "</dd>" +
+        "<dt>Severity</dt>" +
+        "<dd><span class=\"label label-default\">" + feature.getProperty("severity") + "</span></dd>" +
+        "</dl>" +
+        "</div>" +
+        "</div>"
+
+    return content;
+}
+
 $(window).load(function() {
     var mapOptions = {
         center: new google.maps.LatLng(0, 0),
@@ -66,14 +89,12 @@ $(window).load(function() {
 	});
 
     map.data.addListener('click', function(event) {
-        event.feature.toGeoJson(function(object) {
-            infoWindow.setContent("<div><pre>" + JSON.stringify(object, null, '  ') + "</pre></div>");
+        infoWindow.setContent(buildInfoWindowContent(event.feature));
 
-            var anchor = new google.maps.MVCObject();
-            anchor.set("position", event.latLng);
+        var anchor = new google.maps.MVCObject();
+        anchor.set("position", event.latLng);
 
-            infoWindow.open(map, anchor);
-        });
+        infoWindow.open(map, anchor);
     });
 });
 
@@ -91,7 +112,9 @@ $(function() {
                 var feature = map.data.getFeatureById(notification.feature.id);
                 map.data.remove(feature);
 
-                map.data.addGeoJson(notification.feature);
+                if (! notification.feature.properties.closed) {
+                    map.data.addGeoJson(notification.feature);
+                }
             }
         } else if (notification.type === "post_delete") {
             var feature = map.data.getFeatureById(notification.feature.id);

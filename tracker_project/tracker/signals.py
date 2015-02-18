@@ -1,7 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from kombu import Connection
@@ -23,27 +22,28 @@ def incident_post_save(sender, **kwargs):
         feature=kwargs['instance'].geojson_feature
     ))
 
-    areas_of_interest = [
-        area_of_interest.geojson_feature for area_of_interest in AreaOfInterest.objects.filter(
-            polygon__contains=kwargs['instance'].location,
-            severity__in=kwargs['instance'].alert_severities,
-        )
-    ]
+    if not kwargs['instance'].closed:
+        areas_of_interest = [
+            area_of_interest.geojson_feature for area_of_interest in AreaOfInterest.objects.filter(
+                polygon__contains=kwargs['instance'].location,
+                severity__in=kwargs['instance'].alert_severities,
+            )
+        ]
 
-    if areas_of_interest:
-        send_notification(dict(
-            type='alert',
-            feature=kwargs['instance'].geojson_feature,
-            url=reverse('tracker:incident-detail', kwargs={'pk': kwargs['instance'].pk}),
-            areas_of_interest=[
-                {
-                    'id': area_of_interest['id'],
-                    'name': area_of_interest['properties']['name'],
-                    'severity': area_of_interest['properties']['severity']
-                }
-                for area_of_interest in areas_of_interest
-            ]
-        ))
+        if areas_of_interest:
+            send_notification(dict(
+                type='alert',
+                feature=kwargs['instance'].geojson_feature,
+                areas_of_interest=[
+                    {
+                        'id': area_of_interest['id'],
+                        'name': area_of_interest['properties']['name'],
+                        'severity': area_of_interest['properties']['severity'],
+                        'url': area_of_interest['properties']['url'],
+                    }
+                    for area_of_interest in areas_of_interest
+                ]
+            ))
 
 @receiver(post_save, sender=AreaOfInterest)
 def area_of_interest_post_save(sender, **kwargs):

@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.contrib.gis.db import models
 from geojson import Feature, loads
 
@@ -52,7 +53,8 @@ class Incident(models.Model):
                 'created': str(self.created),
                 'closed': self.closed,
                 'model': 'Incident',
-                'pk': self.pk
+                'pk': self.pk,
+                'url': reverse('tracker:incident-detail', kwargs={'pk': self.pk}),
             }
         )
 
@@ -74,7 +76,9 @@ class AreaOfInterest(models.Model):
             properties={
                 'name': self.name,
                 'severity': self.get_severity_display(),
+                'centroid': self.polygon.centroid.geojson,
                 'model': 'AreaOfInterest',
-                'pk': self.pk
+                'pk': self.pk,
+                'url': reverse('tracker:area-of-interest-detail', kwargs={'pk': self.pk}),
             }
         )

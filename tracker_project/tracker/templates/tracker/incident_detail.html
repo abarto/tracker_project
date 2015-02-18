@@ -19,7 +19,7 @@
                 <dt>Name</dt>
                 <dd>{{ object.name }}</dd>
                 <dt>Severity</dt>
-                <dd><span class="label {% if object.severity == 'UR' %}label-danger{% elif object.severity == 'IN' %}label-info{% else %}label-default{% endif %}">{{ object.get_severity_display }}</span></dd>
+                <dd><span class="label label-default">{{ object.get_severity_display }}</span></dd>
                 <dt>Created</dt>
                 <dd>{{ object.created }}</dd>
                 <dt>Description</dt>

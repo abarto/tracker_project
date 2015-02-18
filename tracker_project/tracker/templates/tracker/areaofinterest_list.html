@@ -24,7 +24,7 @@
                 {% for area_of_interest in object_list %}
                     <tr>
                         <td><a href="{% url 'tracker:area-of-interest-detail' pk=area_of_interest.pk %}">{{ area_of_interest.name }}</a></td>
-                        <td><span class="label {% if area_of_interest.severity == 'UR' %}label-danger{% elif area_of_interest.severity == 'IN' %}label-info{% else %}label-default{% endif %}">{{ area_of_interest.get_severity_display }}</span></td>
+                        <td><span class="label label-default">{{ area_of_interest.get_severity_display }}</span></td>
                         <td><a class="area-of-interest-centroid" href="#" data-path="{{ area_of_interest.path_expression }}">Longitude: {{ area_of_interest.polygon.centroid.y|floatformat:4 }}, Latitude: {{ area_of_interest.polygon.centroid.x|floatformat:4 }}</a></td>
                         <td>
                             <a href="{% url 'tracker:area-of-interest-detail' pk=area_of_interest.pk %}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>

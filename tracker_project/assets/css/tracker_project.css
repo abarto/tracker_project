@@ -31,3 +31,11 @@
     margin-top: 10px;
 }
 
+.alert-modal-title {
+    font-size: large;
+    color: red;
+}
+
+.info-window-panel {
+    min-width: 200px;
+}
