@@ -1,4 +1,5 @@
 var map;
+var infoWindow;
 
 function buildAlertModalBodyHtml(notification) {
     var $alertModalBodyHtml = $("<div></div>");
@@ -6,7 +7,15 @@ function buildAlertModalBodyHtml(notification) {
     var feature = notification.feature
 
     var $title = $("<div class=\"alert alert-warning\" role=\"alert\"></div>");
-    $title.text('Incident (' + notification.feature.properties.severity + '): ' + notification.feature.properties.name)
+    $title.html(
+        'Incident (' +
+        notification.feature.properties.severity +
+        '): <a href=\"' +
+        notification.url +
+        "\">" +
+        notification.feature.properties.name +
+        "</a>"
+    )
 
     $alertModalBodyHtml.append($title);
     $alertModalBodyHtml.append($("<h4>Areas of Interest:</h4>"))
@@ -51,6 +60,21 @@ $(window).load(function() {
 
     map.data.loadGeoJson(incidentFeatureCollectionUrl);
     map.data.loadGeoJson(areaOfInterestFeatureCollectionUrl);
+
+    infoWindow = new google.maps.InfoWindow({
+	    content: ""
+	});
+
+    map.data.addListener('click', function(event) {
+        event.feature.toGeoJson(function(object) {
+            infoWindow.setContent("<div><pre>" + JSON.stringify(object, null, '  ') + "</pre></div>");
+
+            var anchor = new google.maps.MVCObject();
+            anchor.set("position", event.latLng);
+
+            infoWindow.open(map, anchor);
+        });
+    });
 });
 
 $(function() {
