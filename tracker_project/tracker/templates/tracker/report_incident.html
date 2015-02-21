@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}Tracker - Report Incident{% endblock %}
+
+{% block content %}
+<div class="container vertical-center">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">Tracker - Report Incident</div>
+            <div class="panel-body">
+                <div class="report-incident-map-canvas" id="map-canvas"></div>
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'geolocator/src/geolocator.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/report_incident.js' %}"></script>
+{% endblock %}

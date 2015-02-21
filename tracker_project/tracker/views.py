@@ -1,15 +1,15 @@
 from __future__ import absolute_import, unicode_literals
 
-from braces.views import LoginRequiredMixin, JSONResponseMixin
-from django.contrib.gis.geos import GEOSGeometry
+from braces.views import LoginRequiredMixin, JSONResponseMixin, CsrfExemptMixin
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from geojson import FeatureCollection
 
-from .forms import IncidentForm, AreaOfInterestForm
+from .forms import IncidentForm, AreaOfInterestForm, ReportIncidentForm
 from .models import Incident, AreaOfInterest
 
 
@@ -42,6 +42,26 @@ class IncidentCreateView(LoginRequiredMixin, IncidentListOnSuccessMixin, CreateV
 
         return super(IncidentCreateView, self).form_valid(form)
 incident_create = IncidentCreateView.as_view()
+
+
+class ReportIncidentView(CsrfExemptMixin, CreateView):
+    model = Incident
+    form_class = ReportIncidentForm
+    template_name = 'tracker/report_incident.html'
+    success_url = reverse_lazy('tracker:report-incident-success')
+
+    def form_valid(self, form):
+        form.instance.location = Point(
+            (float(form.cleaned_data['location_lon']), float(form.cleaned_data['location_lat']))
+        )
+
+        return super(ReportIncidentView, self).form_valid(form)
+report_incident = ReportIncidentView.as_view()
+
+
+class ReportIncidentSuccessView(TemplateView):
+    template_name = 'tracker/report_incident_success.html'
+report_incident_success = ReportIncidentSuccessView.as_view()
 
 
 class IncidentUpdateView(LoginRequiredMixin, IncidentListOnSuccessMixin, UpdateView):
