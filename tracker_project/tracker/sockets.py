@@ -14,12 +14,17 @@ from .queues import notifications_queue
 @namespace('/notifications')
 class NotificationsNamespace(BaseNamespace):
     def __init__(self, *args, **kwargs):
-        self._logger = logging.getLogger(self.__class__.__name__)
-
         super(NotificationsNamespace, self).__init__(*args, **kwargs)
 
+    def get_initial_acl(self):
+        return ['recv_connect']
+
     def recv_connect(self):
-        self.spawn(self._dispatch)
+        if self.request.user.is_authenticated():
+            self.lift_acl_restrictions()
+            self.spawn(self._dispatch)
+        else:
+            self.disconnect(silent=True)
 
     def _dispatch(self):
         with BrokerConnection(settings.AMPQ_URL) as connection:

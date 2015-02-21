@@ -99,12 +99,20 @@ $(window).load(function() {
 });
 
 $(function() {
-    var socket = io.connect("/notifications");
+    var socket = io.connect(
+        "/notifications",
+        {
+            "reconnectionDelay": 5000,
+            "timeout": 10000
+        }
+    );
 
     socket.on('connect', function(){
         console.log('connect', socket);
     });
     socket.on('notification', function(notification){
+        console.log('notification', notification);
+
         if (notification.type === "post_save") {
             if (notification.created) {
                 map.data.addGeoJson(notification.feature);
