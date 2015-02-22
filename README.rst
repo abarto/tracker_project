@@ -38,12 +38,12 @@ Installation
 
 Clone the repository:
 
-
     $ git clone git@github.com:abarto/tracker-project.git
 
 Create and activate the virtual environment:
 
-::
+    ::
+
     $ cd tracker-project/
     $ virtualenv venv/
     $ . venv/bin/activate
@@ -54,13 +54,15 @@ Install the requirements:
 
 Initialize nodeenv, and install bower:
 
-::
+    ::
+
     (venv)$ nodeenv -p
     (venv)$ npm install -g bower
 
 Create the database and the database user, install the PostGIS extensions:
 
-::
+    ::
+
     $ sudo -u postgres psql
     postgres=# CREATE ROLE tracker_project LOGIN PASSWORD 'tracker_project' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
     postgres=# CREATE DATABASE tracker_project WITH OWNER = tracker_project;
@@ -69,7 +71,8 @@ Create the database and the database user, install the PostGIS extensions:
 
 Initialize the database and set-up the Django environment:
 
-::
+    ::
+
     (venv)$ cd tracker_project/
     (venv)$ python ./manage.py migrate
     (venv)$ python ./manage.py bower_install
