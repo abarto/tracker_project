@@ -60,6 +60,8 @@ class Incident(models.Model):
 
 
 class AreaOfInterest(models.Model):
+    objects = models.GeoManager()
+
     name = models.CharField(max_length=150)
     severity = models.CharField(max_length=2, choices=Incident.SEVERITY_CHOICES, default=Incident.MEDIUM)
     polygon = models.PolygonField()
