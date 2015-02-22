@@ -38,6 +38,8 @@ Installation
 
 Clone the repository:
 
+    ::
+
     $ git clone git@github.com:abarto/tracker-project.git
 
 Create and activate the virtual environment:
@@ -49,6 +51,8 @@ Create and activate the virtual environment:
     $ . venv/bin/activate
 
 Install the requirements:
+
+    ::
 
     (venv)$ pip install -r requirements.txt
 
@@ -79,6 +83,8 @@ Initialize the database and set-up the Django environment:
 
 At this point it is possible to run the development server by using the special socketio_runserver management command
 
+    ::
+
     (venv)$ python ./manage.py socketio_runserver
 
 If you want to run in it in a production environment. Follow the instructions of the next section.
@@ -88,9 +94,13 @@ Running the application
 
 The application can be run using `Chaussette <https://chaussette.readthedocs.org/en/1.2/>`_, with the ``socketio`` backend:
 
+    ::
+
     (venv)$ chaussette --backend socketio --port 8000 tracker_project.wsgi.application
 
 Please notice that the application won't server the static files, so before you can start using it, you need to run the ``collectstatic`` management command:
+
+    ::
 
     (venv)$ python ./manage.py collectstatic
 
