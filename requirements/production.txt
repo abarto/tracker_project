@@ -9,3 +9,4 @@ psycogreen==1.0
 django-braces==1.4.0
 kombu==3.0.24
 geojson==1.0.9
+chaussette==1.2

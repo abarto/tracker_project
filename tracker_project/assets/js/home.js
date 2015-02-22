@@ -103,7 +103,8 @@ $(function() {
         "/notifications",
         {
             "reconnectionDelay": 5000,
-            "timeout": 10000
+            "timeout": 10000,
+            "resource": "socket.io"
         }
     );
 
