@@ -6,7 +6,7 @@ A simple Django project to report and track geo-located incidents within certain
 
 This project created to demonstrate how to use `GeoDjango <https://docs.djangoproject.com/en/1.7/ref/contrib/gis/>`_ and send real-time notifications using `gevent-socketio <https://github.com/abourget/gevent-socketio>`_ and `RabbitMQ <http://www.rabbitmq.com/>`_. For an in depth description of the project see the following `blogpost <http://www.machinalis.com/blog/rt-notifications-gevent-gis/>`_.
 
-The default configuration uses `PostgreSQL <http://www.postgresql.org/>`_ with the `PostGIS <http://postgis.net/>`_ extensions as database back-end, but it can also work with other GeoDjango compatible databases like `SQLite <http://www.sqlite.org/>`_+`SpatiaLite <https://www.gaia-gis.it/fossil/libspatialite/index>`_.
+The default configuration uses `PostgreSQL <http://www.postgresql.org/>`_ with the `PostGIS <http://postgis.net/>`_ extensions as database back-end, but it can also work with other GeoDjango compatible databases like `SQLite <http://www.sqlite.org/>`_ + `SpatiaLite <https://www.gaia-gis.it/fossil/libspatialite/index>`_.
 
 Requirements
 ============
@@ -38,10 +38,12 @@ Installation
 
 Clone the repository:
 
+
     $ git clone git@github.com:abarto/tracker-project.git
 
 Create and activate the virtual environment:
 
+::
     $ cd tracker-project/
     $ virtualenv venv/
     $ . venv/bin/activate
@@ -52,11 +54,13 @@ Install the requirements:
 
 Initialize nodeenv, and install bower:
 
+::
     (venv)$ nodeenv -p
     (venv)$ npm install -g bower
 
 Create the database and the database user, install the PostGIS extensions:
 
+::
     $ sudo -u postgres psql
     postgres=# CREATE ROLE tracker_project LOGIN PASSWORD 'tracker_project' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
     postgres=# CREATE DATABASE tracker_project WITH OWNER = tracker_project;
@@ -65,6 +69,7 @@ Create the database and the database user, install the PostGIS extensions:
 
 Initialize the database and set-up the Django environment:
 
+::
     (venv)$ cd tracker_project/
     (venv)$ python ./manage.py migrate
     (venv)$ python ./manage.py bower_install
@@ -84,7 +89,7 @@ The application can be run using `Chaussette <https://chaussette.readthedocs.org
 
 Please notice that the application won't server the static files, so before you can start using it, you need to run the ``collectstatic`` management command:
 
-   (venv)$ python ./manage.py collectstatic
+    (venv)$ python ./manage.py collectstatic
 
 and then use a regular HTTP server like `nginx <http://nginx.com>`_ (we've included a sample configuration file) to server the files.
 
@@ -93,6 +98,6 @@ You can also use socket and process managers like `Circus <https://chaussette.re
 Acknowledgements
 ================
 
-The basic architecture for the notifications system follows the guidelines presented by Jeremy West in the blogpost `Django, Gevent, and Socket.io <http://www.pixeldonor.com/2014/jan/10/django-gevent-and-socketio/>`. We also used the code for his `socketio_runserver <https://github.com/iamjem/socketio_runserver>`_ management command.
+The basic architecture for the notifications system follows the guidelines presented by Jeremy West in the blogpost `Django, Gevent, and Socket.io <http://www.pixeldonor.com/2014/jan/10/django-gevent-and-socketio/>`_. We also used the code for his `socketio_runserver <https://github.com/iamjem/socketio_runserver>`_ management command.
 
 
