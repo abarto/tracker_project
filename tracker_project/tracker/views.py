@@ -25,6 +25,7 @@ class AreaOfInterestListOnSuccessMixin(object):
 
 class IncidentListView(LoginRequiredMixin, ListView):
     queryset = Incident.objects.all().order_by('-created')
+    paginate_by = 25
 incident_list = IncidentListView.as_view()
 
 
@@ -89,6 +90,7 @@ incident_delete = IncidentDeleteView.as_view()
 
 class AreaOfInterestListView(LoginRequiredMixin, ListView):
     model = AreaOfInterest
+    paginate_by = 25
 area_of_interest_list = AreaOfInterestListView.as_view()
 
 
