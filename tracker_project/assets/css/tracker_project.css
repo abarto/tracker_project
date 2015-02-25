@@ -36,10 +36,6 @@
     color: red;
 }
 
-.info-window-panel {
-    min-width: 200px;
-}
-
 .report-incident-map-canvas {
     width: 100%;
     height: 250px;

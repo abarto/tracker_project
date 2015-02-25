@@ -30,9 +30,43 @@
         </div>
     </div>
 </div>
+<script id="info-window-contents-template" type="text/x-handlebars-template">
+    {% verbatim %}
+    <dl>
+        <dd></dd>
+        <dt>Model</dt>
+        <dd>{{model}}</dd>
+        <dt>Name</dt>
+        <dd>{{name}}</dd>
+        <dt>Severity</dt>
+        <dd><span class="label label-default">{{severity}}</span></dd>
+    </dl>
+    <a href="{{url}}" class="btn btn-default btn-sm btn-block">Click here for details</a>
+    {% endverbatim %}
+</script>
+<script id="alert-modal-body-template" type="text/x-handlebars-template">
+    {% verbatim %}
+    <div>
+        <div class="alert alert-warning" role="alert">
+            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;Incident: <a class="alert-link" href="{{notification.feature.properties.url}}">{{notification.feature.properties.name}}</a>
+            <span class=label label-default pull-right>{{notification.feature.properties.severity}}</span>
+        </div>
+        <h4>Areas of Interest:</h4>
+        <ul class="list-group">
+            {{#each notification.areas_of_interest}}
+                <li class="list-group-item">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;<a href="{{this.url}}">{{this.name}}</a>
+                    <span class="label label-default pull-right">{{this.severity}}</span>
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+    {% endverbatim %}
+</script>
 {% endblock %}
 
 {% block extra_js %}
+    <script type="text/javascript" src="{% static 'handlebars/handlebars.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'socket.io-client/dist/socket.io.min.js' %}"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
     <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
