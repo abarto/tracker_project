@@ -58,8 +58,14 @@
         </div>
     </div>
 </div>
+<script id="area-of-interest-modal-img-src-template" type="text/x-handlebars-template">
+    {% verbatim %}
+    https://maps.googleapis.com/maps/api/staticmap?size=512x512&maptype=hybrid&path=color:0xff0000ff|fillcolor:0xff000044|weight:5|{{ path }}
+    {% endverbatim %}
+</script>
 {% endblock %}
 
 {% block extra_js %}
+<script type="text/javascript" src="{% static 'handlebars/handlebars.min.js' %}"></script>
 <script src="{% static 'js/areaofinterest_list.js' %}"></script>
 {% endblock %}

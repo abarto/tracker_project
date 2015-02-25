@@ -69,8 +69,14 @@
         </div>
     </div>
 </div>
+<script id="incident-location-modal-img-src-template" type="text/x-handlebars-template">
+    {% verbatim %}
+    https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center={{ latitude }},{{ longitude }}&markers=color:red|label:Location|{{ latitude }},{{ longitude }}
+    {% endverbatim %}
+</script>
 {% endblock %}
 
 {% block extra_js %}
+<script type="text/javascript" src="{% static 'handlebars/handlebars.min.js' %}"></script>
 <script src="{% static 'js/incident_list.js' %}"></script>
 {% endblock %}

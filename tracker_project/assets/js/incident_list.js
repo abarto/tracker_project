@@ -1,4 +1,6 @@
 $(function() {
+    var incidentLocationModalImgSrcTemplate = Handlebars.compile($.trim($("#incident-location-modal-img-src-template").html()));
+
     $(".incident-location").click(function(event) {
         var $eventTarget = $(event.target);
         var $incidentLocationModal = $("#incidentLocationModal");
@@ -10,7 +12,10 @@ $(function() {
         $incidentLocationModal.find("#incidentLocationModalTitle").text(name);
         $incidentLocationModal.find("img").attr(
             "src",
-            "https://maps.googleapis.com/maps/api/staticmap?size=512x512&zoom=15&maptype=hybrid&center=" + latitude + "," + longitude +"&markers=color:red|label:Location|" + latitude + "," + longitude
+            incidentLocationModalImgSrcTemplate({
+                latitude: latitude,
+                longitude: longitude
+            })
         );
 
         $incidentLocationModal.modal('show');
