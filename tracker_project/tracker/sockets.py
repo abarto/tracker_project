@@ -1,7 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-import logging
-
 from django.conf import settings
 from kombu import BrokerConnection
 from kombu.mixins import ConsumerMixin
