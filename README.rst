@@ -8,6 +8,11 @@ This project created to demonstrate how to use `GeoDjango <https://docs.djangopr
 
 The default configuration uses `PostgreSQL <http://www.postgresql.org/>`_ with the `PostGIS <http://postgis.net/>`_ extensions as database back-end, but it can also work with other GeoDjango compatible databases like `SQLite <http://www.sqlite.org/>`_ + `SpatiaLite <https://www.gaia-gis.it/fossil/libspatialite/index>`_.
 
+Update
+======
+
+Some people asked me about a Node.js+socket.io (instead of the gevent-socketio) implementation of the project, so I created a `node_js <https://github.com/abarto/tracker_project/tree/node_js>`_ branch for it.
+
 Requirements
 ============
 
