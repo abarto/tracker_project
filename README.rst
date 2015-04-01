@@ -27,6 +27,7 @@ Ubuntu
 * postgis
 * python-virtualenv
 * libevent-dev
+* rabbitmq-server
 
 Fedora
 ------
@@ -37,6 +38,7 @@ Fedora
 * postgis
 * python-virtualenv
 * libevent-devel
+* rabbitmq-server
 
 Installation
 ============
