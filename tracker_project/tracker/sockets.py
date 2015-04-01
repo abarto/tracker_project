@@ -1,12 +1,14 @@
 from __future__ import absolute_import, unicode_literals
 
+import uuid
+
 from django.conf import settings
-from kombu import BrokerConnection
+from kombu import BrokerConnection, Queue
 from kombu.mixins import ConsumerMixin
 from socketio.namespace import BaseNamespace
 from socketio.sdjango import namespace
 
-from .queues import notifications_queue
+from .queues import notifications_exchange
 
 
 @namespace('/notifications')
@@ -34,9 +36,15 @@ class NotificationsConsumer(ConsumerMixin):
         self.connection = connection
         self.socket = socket
         self.ns_name = ns_name
+        self.queue = Queue(
+            'notifications-{}'.format(uuid.uuid1()),
+            exchange=notifications_exchange,
+            routing_key='notifications',
+            auto_delete=True
+        )
 
     def get_consumers(self, Consumer, channel):
-        return [Consumer(queues=[notifications_queue], callbacks=[self.process_notification])]
+        return [Consumer(queues=[self.queue], callbacks=[self.process_notification])]
 
     def process_notification(self, body, message):
         self.socket.send_packet(dict(

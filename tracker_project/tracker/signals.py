@@ -17,7 +17,7 @@ def send_notification(notification):
             maybe_declare(notifications_exchange, producer.channel)
             producer.publish(
                 notification,
-                exchange='notifications',
+                exchange=notifications_exchange,
                 routing_key='notifications'
             )
 
