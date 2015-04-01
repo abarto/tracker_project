@@ -21,6 +21,8 @@ Ubuntu
 * postgresql-server-dev-all
 * postgis
 * python-virtualenv
+* libevent-dev
+* rabbitmq-server
 
 Fedora
 ------
@@ -30,6 +32,8 @@ Fedora
 * libpqxx-devel
 * postgis
 * python-virtualenv
+* libevent-devel
+* rabbitmq-server
 
 Installation
 ============
