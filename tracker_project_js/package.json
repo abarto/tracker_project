@@ -1,0 +1,16 @@
+{
+    "private": true,
+    "name": "tracker_project",
+    "version": "0.0.1",
+    "description": "tacker-project Node.js components",
+    "keywords": [],
+    "bugs": {
+        "email" : "abarto@machinalis.com "
+    },
+    "files": ["notifications.js"],
+    "repository" : {
+        "type" : "git",
+        "url" : "git@github.com:abarto/tracker_project.git#node_js"
+    },
+    "engines" : { "node" : ">=0.12.0" }
+}

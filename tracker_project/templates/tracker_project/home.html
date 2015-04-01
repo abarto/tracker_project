@@ -66,13 +66,14 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script type="text/javascript" src="{% static 'handlebars/handlebars.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'socket.io-client/dist/socket.io.min.js' %}"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
-    <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
     <script type="text/javascript">
         var incidentFeatureCollectionUrl = "{% url 'tracker:incident-feature-collection' %}";
         var areaOfInterestFeatureCollectionUrl = "{% url 'tracker:area-of-interest-feature-collection' %}";
+        var socketIoUrl = '{{ socket_io_url }}';
     </script>
+    <script type="text/javascript" src="{% static 'handlebars/handlebars.min.js' %}"></script>
+    <script src="http://localhost:8002/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
+    <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
 {% endblock %}

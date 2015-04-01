@@ -55,7 +55,7 @@ $(window).load(function() {
 
 $(function() {
     var socket = io.connect(
-        "/notifications",
+        socketIoUrl,
         {
             "reconnectionDelay": 5000,
             "timeout": 10000,

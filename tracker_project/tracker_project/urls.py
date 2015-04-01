@@ -2,9 +2,6 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
 
-from socketio import sdjango
-sdjango.autodiscover()
-
 urlpatterns = patterns(
     '',
     url(r'^$', 'tracker_project.views.home', name='home'),
@@ -16,6 +13,5 @@ urlpatterns = patterns(
         {'next_page': reverse_lazy('home')},
         name='logout'
     ),
-    url(r'^tracker/', include('tracker.urls', 'tracker')),
-    url(r'^socket\.io', include(sdjango.urls))
+    url(r'^tracker/', include('tracker.urls', 'tracker'))
 )
