@@ -12,8 +12,6 @@ var exchange;
 
 // Wait for connection to RabbitMQ become established.
 connection.on('ready', function () {
-    console.log('ready', connection);
-
     exchange = connection.exchange(
         'notifications',
         { noDeclare: true }
@@ -32,7 +30,7 @@ notifications.use(function(socket, next) {
 });
 notifications.on('connection', function (socket) {
     // Subscribe to the notifications queue
-    connection.queue(
+    var queue = connection.queue(
         'notifications-' + uuid.v1(),
         { 'autoDelete': true },
         function (q) {
@@ -45,4 +43,10 @@ notifications.on('connection', function (socket) {
             });
         }
     );
+
+    socket.on('disconnect', function () {
+        if (queue !== undefined || queue !== null) {
+            queue.unbind(exchange, 'notifications');
+        }
+    });
 });
