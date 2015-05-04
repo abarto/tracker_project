@@ -1,13 +1,19 @@
 from __future__ import absolute_import, unicode_literals
 
+from base64 import b64decode, b64encode
 from braces.views import LoginRequiredMixin, JSONResponseMixin, CsrfExemptMixin
+from datetime import datetime
 from django.contrib.gis.geos import GEOSGeometry, Point
+from django.contrib.auth.decorators import login_required
+from django.core.serializers import serialize
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponse
 from django.views.generic import View, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from geojson import FeatureCollection
+from subprocess import check_output
 
 from .forms import IncidentForm, AreaOfInterestForm, ReportIncidentForm
 from .models import Incident, AreaOfInterest
@@ -151,3 +157,21 @@ class AreaOfInterestFeatureCollectionView(LoginRequiredMixin, JSONResponseMixin,
 
         return self.render_json_response(feature_collection)
 area_of_interest_feature_collection = AreaOfInterestFeatureCollectionView.as_view()
+
+
+@login_required()
+def incident_export_report(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="incidents-{}.pdf"'.format(datetime.now())
+
+    incidents = Incident.objects.all().order_by('-created')
+    report_data = b64encode(serialize('json', incidents).encode('utf-8'))
+
+    reports_output = check_output(
+        ['java', '-jar', 'tracker/reports/target/reports-0.0.1.jar', 'tracker/reports/incidents.py', report_data],
+        stderr=None, stdin=None
+    )
+
+    response.write(b64decode(reports_output.strip()))
+
+    return response

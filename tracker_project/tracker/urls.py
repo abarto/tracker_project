@@ -4,7 +4,7 @@ from .views import (
     incident_list, incident_detail, incident_create, incident_update, incident_delete,
     area_of_interest_list, area_of_interest_detail, area_of_interest_create, area_of_interest_update,
     area_of_interest_delete, incident_feature_collection, area_of_interest_feature_collection,
-    report_incident, report_incident_success
+    report_incident, report_incident_success, incident_export_report
 )
 
 urlpatterns = patterns(
@@ -21,6 +21,7 @@ urlpatterns = patterns(
     url(r'^incident/report_success/$', report_incident_success, name='report-incident-success'),
     url(r'^incident/update/(?P<pk>\d+)/$', incident_update, name='incident-update'),
     url(r'^incident/delete/(?P<pk>\d+)/$', incident_delete, name='incident-delete'),
+    url(r'^incident/export_report$', incident_export_report, name='incident-export-report'),
     url(r'^area_of_interest/$', area_of_interest_list, name='area-of-interest-list'),
     url(
         r'^area_of_interest/feature_collection/$',

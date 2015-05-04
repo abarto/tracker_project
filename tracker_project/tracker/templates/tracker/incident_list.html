@@ -11,7 +11,10 @@
             <h3 class="panel-title">Incidents</h3>
         </div>
         <div class="panel-body">
-            <a class="btn btn-default btn-xs pull-right" href="{% url 'tracker:incident-create' %}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add Incident</a>
+            <div class="btn-group pull-right" role="group">
+                <a class="btn btn-default btn-xs" href="{% url 'tracker:incident-create' %}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add Incident</a>
+                <a class="btn btn-default btn-xs" href="{% url 'tracker:incident-export-report' %}" role="button"><span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>&nbsp;Export Report</a>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
