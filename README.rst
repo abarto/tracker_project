@@ -97,8 +97,12 @@ and then use a regular HTTP server like `nginx <http://nginx.com>`_ (we've inclu
 
 You can also use socket and process managers like `Circus <https://chaussette.readthedocs.org/en/1.2/#using-chaussette-in-circus>`_ or `Supervisor <https://chaussette.readthedocs.org/en/1.2/#using-chaussette-in-supervisor>`_.
 
+Vagrant
+-------
+
+A `Vagrant <https://www.vagrantup.com/>`_ configuration file is included if you want to test the project.
+
 Acknowledgements
 ================
 
 The basic architecture for the notifications system follows the guidelines presented by Jeremy West in the blogpost `Django, Gevent, and Socket.io <http://www.pixeldonor.com/2014/jan/10/django-gevent-and-socketio/>`_. We also used the code for his `socketio_runserver <https://github.com/iamjem/socketio_runserver>`_ management command.
-
