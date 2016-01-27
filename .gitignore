@@ -1,0 +1,8 @@
+db.sqlite3
+.idea
+__pycache__
+*.pyc
+tracker_project_venv/
+.vagrant
+static/
+components/
