@@ -7,4 +7,4 @@ tracker_project_venv/
 static/
 components/
 *.log
-
+*.pid
