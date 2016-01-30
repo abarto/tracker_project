@@ -22,8 +22,6 @@ SECRET_KEY = 'q=q(@w19i&byb8*#n%!vlum(m0fmaz!0cu!6xy&rqk-_(yn^je'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -39,7 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'djangobower',
     'crispy_forms',
-    'tracker'
+    'tracker',
+    'channels'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -53,6 +52,24 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'tracker_project.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.normpath(os.path.join(BASE_DIR, 'templates'))
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages'
+            ],
+        },
+    },
+]
 
 WSGI_APPLICATION = 'tracker_project.wsgi.application'
 
@@ -108,16 +125,9 @@ BOWER_COMPONENTS_ROOT = os.path.join(os.path.abspath(BASE_DIR), 'components')
 BOWER_INSTALLED_APPS = (
     'jquery',
     'bootstrap',
-    'git+https://github.com/socketio/socket.io-client.git#0.9.16',
     'geolocator',
     'handlebars'
 )
-
-
-TEMPLATE_DIRS = (
-    os.path.normpath(os.path.join(BASE_DIR, 'templates')),
-)
-
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -126,3 +136,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 AMPQ_URL = 'amqp://guest:guest@localhost//'
+
+# channels configuration
+
+CHANNEL_BACKENDS = {
+    "default": {
+        "BACKEND": "channels.backends.database.DatabaseChannelBackend",
+        "ROUTING": "tracker_project.routing.channel_routing",
+    },
+}

@@ -30,8 +30,8 @@ $(window).load(function() {
     map.data.loadGeoJson(areaOfInterestFeatureCollectionUrl);
 
     infoWindow = new google.maps.InfoWindow({
-	    content: ""
-	});
+        content: ""
+	  });
 
     map.data.addListener('click', function(event) {
         console.log(event.feature);
@@ -54,19 +54,17 @@ $(window).load(function() {
 });
 
 $(function() {
-    var socket = io.connect(
-        "/notifications",
-        {
-            "reconnectionDelay": 5000,
-            "timeout": 10000,
-            "resource": "socket.io"
-        }
-    );
+    var socket = new WebSocket(webSocketUrl
+);
 
-    socket.on('connect', function(){
-        console.log('connect', socket);
-    });
-    socket.on('notification', function(notification){
+    socket.onopen = function(event) {
+        console.log('open', event);
+    }
+    socket.onmessage = function(event) {
+        console.log('message', event);
+
+        var notification = $.parseJSON(event.data);
+
         console.log('notification', notification);
 
         if (notification.type === "post_save") {
@@ -88,8 +86,11 @@ $(function() {
         } else {
             console.log(notification);
         }
-    });
-    socket.on('disconnect', function(){
-        console.log('disconnect', socket);
-    });
+    }
+    socket.onclose = function(event) {
+        console.log('close', event);
+    }
+    socket.onerror = function(event) {
+        console.log('error', event);
+    }
 });
