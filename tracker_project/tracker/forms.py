@@ -33,6 +33,9 @@ class ReportIncidentForm(forms.ModelForm):
         model = Incident
         fields = ('location_description', 'location_lat', 'location_lon', 'name', 'description', 'severity')
         widgets = {
+            'severity': forms.Select(
+                attrs={'class': 'selectpicker', 'rows': 4}
+            ),
             'description': forms.Textarea(
                 attrs={'class': 'form-control', 'rows': 4}
             )
@@ -61,6 +64,11 @@ class IncidentForm(forms.ModelForm):
     class Meta:
         model = Incident
         exclude = ('location',)
+        widgets = {
+            'severity': forms.Select(
+                attrs={'class': 'selectpicker'}
+            )
+        }
 
 
 class AreaOfInterestForm(forms.ModelForm):
@@ -85,3 +93,8 @@ class AreaOfInterestForm(forms.ModelForm):
     class Meta:
         model = AreaOfInterest
         exclude = ('polygon',)
+        widgets = {
+            'severity': forms.Select(
+                attrs={'class': 'selectpicker'}
+            )
+        }

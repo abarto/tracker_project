@@ -126,7 +126,8 @@ BOWER_INSTALLED_APPS = (
     'jquery',
     'bootstrap',
     'geolocator',
-    'handlebars'
+    'handlebars',
+    'bootstrap-select'
 )
 
 LOGIN_REDIRECT_URL = '/'
