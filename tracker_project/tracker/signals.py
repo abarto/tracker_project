@@ -9,7 +9,6 @@ from django.dispatch import receiver
 from channels import Group
 
 from .models import Incident, AreaOfInterest
-from .queues import notifications_exchange
 
 
 def send_notification(notification):
