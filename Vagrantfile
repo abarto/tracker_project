@@ -22,12 +22,30 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y nginx git build-essential python python-dev python-virtualenv postgresql postgresql-server-dev-all postgis postgresql-9.3-postgis-2.1 redis-server
+    apt-get install -y supervisor nginx git build-essential python python-dev python-virtualenv postgresql postgresql-server-dev-all postgis postgresql-9.3-postgis-2.1 redis-server
 
     sudo -u postgres psql --command="CREATE USER tracker_project WITH PASSWORD 'tracker_project';"
     sudo -u postgres psql --command="CREATE DATABASE tracker_project WITH OWNER tracker_project;"
     sudo -u postgres psql --command="GRANT ALL PRIVILEGES ON DATABASE tracker_project TO tracker_project;"
     sudo -u postgres psql --command="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;" tracker_project
+  SHELL
+
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    virtualenv --no-pip tracker_project_venv
+    source tracker_project_venv/bin/activate
+    curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python
+
+    pip install -r tracker_project/requirements.txt
+
+    cd tracker_project/tracker_project/
+
+    nodeenv --python-virtualenv
+    npm install --global bower
+
+    python manage.py migrate
+    python manage.py bower_install
+    python manage.py loaddata auth.json
+    python manage.py collectstatic --noinput
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -79,23 +97,32 @@ Vagrant.configure(2) do |config|
           }
       }
     ' > /etc/nginx/conf.d/tracker_project.conf
-    sudo service nginx restart
-  SHELL
 
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
-    virtualenv --no-pip tracker_project_venv
-    source tracker_project_venv/bin/activate
-    curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python
+    /usr/sbin/service nginx restart
 
-    pip install -r tracker_project/requirements.txt
+    echo '
+      [program:tracker_project_uwsgi]
+      user = vagrant
+      command = /home/vagrant/tracker_project_venv/bin/uwsgi --chdir=/home/vagrant/tracker_project/tracker_project --module=tracker_project.wsgi:application --env DJANGO_SETTINGS_MODULE=tracker_project.settings --master --pidfile=/home/vagrant/tracker_project/tracker_project-master.pid --http=127.0.0.1:8000 --processes=5 --uid=1000 --gid=1000 --harakiri=20 --max-requests=5000 --vacuum --home=/home/vagrant/tracker_project_venv/
+      autostart = true
+      autorestart = true
+      stderr_logfile = /home/vagrant/tracker_project/uwsgi_stderr.log
+      stdout_logfile = /home/vagrant/tracker_project/uwsgi_stdout.log
+      stopsignal = INT
+    ' > /etc/supervisor/conf.d/tracker_project_uwsgi.conf
 
-    cd tracker_project/tracker_project/
+    echo '
+      [program:tracker_project_runwsserver]
+      user = vagrant
+      directory = /home/vagrant/tracker_project/tracker_project
+      command = /home/vagrant/tracker_project_venv/bin/python /home/vagrant/tracker_project/tracker_project/manage.py runwsserver
+      autostart = true
+      autorestart = true
+      stderr_logfile = /home/vagrant/tracker_project/runwsserver_stderr.log
+      stdout_logfile = /home/vagrant/tracker_project/runwsserver_stdout.log
+      stopsignal = INT
+    ' > /etc/supervisor/conf.d/tracker_project_runwsserver.conf
 
-    nodeenv --python-virtualenv
-    npm install --global bower
-
-    python manage.py migrate
-    python manage.py bower_install
-    python manage.py loaddata auth.json
+    /usr/bin/supervisorctl reload
   SHELL
 end

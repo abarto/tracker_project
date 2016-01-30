@@ -1,17 +1,15 @@
-===============
-tracker_project
-===============
+===============================
+tracker_project_django_channels
+===============================
 
 A simple Django project to report and track geo-located incidents within certain areas of interest. Whenever a new incident occurs the user is reported in real-time and the event is marked in a map (using `Google Maps JavaScript API <https://developers.google.com/maps/documentation/javascript/>`_). It's is possible to report the locations manually, but there's also a view that uses the `geolocator <https://github.com/onury/geolocator>`_ library to automatically detect the user's location.
 
-This project created to demonstrate how to use `GeoDjango <https://docs.djangoproject.com/en/1.7/ref/contrib/gis/>`_ and send real-time notifications using `gevent-socketio <https://github.com/abourget/gevent-socketio>`_ and `RabbitMQ <http://www.rabbitmq.com/>`_. For an in depth description of the project see the following `blogpost <http://www.machinalis.com/blog/rt-notifications-gevent-gis/>`_.
-
 The default configuration uses `PostgreSQL <http://www.postgresql.org/>`_ with the `PostGIS <http://postgis.net/>`_ extensions as database back-end, but it can also work with other GeoDjango compatible databases like `SQLite <http://www.sqlite.org/>`_ + `SpatiaLite <https://www.gaia-gis.it/fossil/libspatialite/index>`_.
 
-Update
-======
+Real-time notifications
+=======================
 
-Some people asked me about a Node.js+socket.io (instead of the gevent-socketio) implementation of the project, so I created a `node_js <https://github.com/abarto/tracker_project/tree/node_js>`_ branch for it.
+This project created to demonstrate how to use `GeoDjango <https://docs.djangoproject.com/en/1.7/ref/contrib/gis/>`_ as well as sending real-time notifications using `django channels <https://github.com/andrewgodwin/channels>`_ with the `Redis<http://redis.io/>`_ backend.
 
 Requirements
 ============
@@ -21,31 +19,31 @@ Before you can run this project, the following packages need to be installed:
 Ubuntu
 ------
 
+* git
 * python-dev
 * postgresql
 * postgresql-server-dev-all
 * postgis
 * python-virtualenv
-* libevent-dev
-* rabbitmq-server
+* redis-server
 
 Fedora
 ------
 
+* git
 * python-devel
 * postgresql-server
 * libpqxx-devel
 * postgis
 * python-virtualenv
-* libevent-devel
-* rabbitmq-server
+* redis-server
 
 Installation
 ============
 
 Clone the repository: ::
 
-    $ git clone git@github.com:abarto/tracker-project.git
+    $ git clone --branch use-django-channels git@github.com:abarto/tracker-project.git
 
 Create and activate the virtual environment: ::
 
@@ -64,11 +62,10 @@ Initialize nodeenv, and install bower: ::
 
 Create the database and the database user, install the PostGIS extensions: ::
 
-    $ sudo -u postgres psql
-    postgres=# CREATE ROLE tracker_project LOGIN PASSWORD 'tracker_project' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
-    postgres=# CREATE DATABASE tracker_project WITH OWNER = tracker_project;
-    postgres=# \connect tracker_project;
-    postgres=# CREATE EXTENSION postgis;
+    sudo -u postgres psql --command="CREATE USER tracker_project WITH PASSWORD 'tracker_project';"
+    sudo -u postgres psql --command="CREATE DATABASE tracker_project WITH OWNER tracker_project;"
+    sudo -u postgres psql --command="GRANT ALL PRIVILEGES ON DATABASE tracker_project TO tracker_project;"
+    sudo -u postgres psql --command="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;" tracker_project
 
 Initialize the database and set-up the Django environment: ::
 
@@ -76,33 +73,54 @@ Initialize the database and set-up the Django environment: ::
     (venv)$ python ./manage.py migrate
     (venv)$ python ./manage.py bower_install
 
-At this point it is possible to run the development server by using the special socketio_runserver management command ::
+At this point it is possible to run the development server using the following commands ::
 
-    (venv)$ python ./manage.py socketio_runserver
+    (venv)$ python ./manage.py runserver
 
-If you want to run in it in a production environment. Follow the instructions of the next section.
+and
+
+    (venv)$ python ./manage.py runwsserver
+
+for the WebSocket server.
 
 Running the application
 =======================
 
-The application can be run using `Chaussette <https://chaussette.readthedocs.org/en/1.2/>`_, with the ``socketio`` backend: ::
+As mentioned in the `django channels <https://github.com/andrewgodwin/channels>`_ in order to run the application using websockets we need at least and interface server and a worker are needed. We're going to use uWSGI to serve traditional HTTP requests and act as a worker, and the default WebSocket server that comes with Django channels:
 
-    (venv)$ chaussette --backend socketio --port 8000 tracker_project.wsgi.application
+::
+
+    (venv)$ uwsgi --chdir=/path/to/tracker_project/tracker_project \
+      --module=tracker_project.wsgi:application \
+      --env DJANGO_SETTINGS_MODULE=tracker_project.settings \
+      --master --pidfile=/path/to/tracker_project/tracker_project-master.pid \
+      --http=127.0.0.1:8000 \
+      --processes=5 \
+      --harakiri=20 \
+      --max-requests=5000 \
+      --vacuum \
+      --home=/path/to/tracker_project_venv/
+
+and the WebSocket server:
+
+::
+
+    (venv)$ python ./manage.py runwsserver
+
+::
 
 Please notice that the application won't server the static files, so before you can start using it, you need to run the ``collectstatic`` management command: ::
 
     (venv)$ python ./manage.py collectstatic
 
-and then use a regular HTTP server like `nginx <http://nginx.com>`_ (we've included a sample configuration file) to server the files.
-
-You can also use socket and process managers like `Circus <https://chaussette.readthedocs.org/en/1.2/#using-chaussette-in-circus>`_ or `Supervisor <https://chaussette.readthedocs.org/en/1.2/#using-chaussette-in-supervisor>`_.
+and then use a regular HTTP server like `nginx <http://nginx.com>`_ to server the files. We've included sample configuration files for NGINX and Supervisor.
 
 Vagrant
 -------
 
 A `Vagrant <https://www.vagrantup.com/>`_ configuration file is included if you want to test the project.
 
-Acknowledgements
-================
+Feedback
+========
 
-The basic architecture for the notifications system follows the guidelines presented by Jeremy West in the blogpost `Django, Gevent, and Socket.io <http://www.pixeldonor.com/2014/jan/10/django-gevent-and-socketio/>`_. We also used the code for his `socketio_runserver <https://github.com/iamjem/socketio_runserver>`_ management command.
+Comments, issues and pull requests are welcome. Don't hesitate to contact me if you something a could have done better.
