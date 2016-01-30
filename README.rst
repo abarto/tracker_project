@@ -8,6 +8,11 @@ This project created to demonstrate how to use `GeoDjango <https://docs.djangopr
 
 The default configuration uses `PostgreSQL <http://www.postgresql.org/>`_ with the `PostGIS <http://postgis.net/>`_ extensions as database back-end, but it can also work with other GeoDjango compatible databases like `SQLite <http://www.sqlite.org/>`_ + `SpatiaLite <https://www.gaia-gis.it/fossil/libspatialite/index>`_.
 
+Update #2
+=========
+
+I've created yet another implementation of the project using `Django channels <https://github.com/andrewgodwin/channels>`_ for the real-time notifications. You can check it out in the `use-django-channels <https://github.com/abarto/tracker_project/tree/use-django-channels>`_ branch.
+
 Update
 ======
 
