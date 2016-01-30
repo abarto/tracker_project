@@ -54,8 +54,7 @@ $(window).load(function() {
 });
 
 $(function() {
-    var socket = new WebSocket(webSocketUrl
-);
+    var socket = new WebSocket(webSocketUrl);
 
     socket.onopen = function(event) {
         console.log('open', event);

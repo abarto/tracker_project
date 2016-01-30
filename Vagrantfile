@@ -9,7 +9,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.hostname = "tracker-project.local"
 
-  config.vm.network "forwarded_port", guest: 8000, host: 8000
+  config.vm.network "forwarded_port", guest: 80, host: 8000
+  config.vm.network "forwarded_port", guest: 8000, host: 8001
   config.vm.network "forwarded_port", guest: 9000, host: 9000
 
   config.vm.synced_folder ".", "/home/vagrant/tracker_project/"
@@ -21,12 +22,64 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y git build-essential python python-dev python-virtualenv postgresql postgresql-server-dev-all postgis postgresql-9.3-postgis-2.1 rabbitmq-server libevent-dev
+    apt-get install -y nginx git build-essential python python-dev python-virtualenv postgresql postgresql-server-dev-all postgis postgresql-9.3-postgis-2.1 redis-server
 
     sudo -u postgres psql --command="CREATE USER tracker_project WITH PASSWORD 'tracker_project';"
     sudo -u postgres psql --command="CREATE DATABASE tracker_project WITH OWNER tracker_project;"
     sudo -u postgres psql --command="GRANT ALL PRIVILEGES ON DATABASE tracker_project TO tracker_project;"
     sudo -u postgres psql --command="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;" tracker_project
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    echo '
+      upstream tracker_project_upstream {
+          server 127.0.0.1:8000 fail_timeout=0;
+      }
+
+      upstream tracker_project_ws_upstream {
+          server 127.0.0.1:9000 fail_timeout=0;
+      }
+
+      map $http_upgrade $connection_upgrade {
+          default upgrade;
+          ''      close;
+      }
+
+      server {
+          listen 80;
+          server_name localhost;
+
+          client_max_body_size 4G;
+
+          access_log /home/vagrant/tracker_project/nginx_access.log;
+          error_log /home/vagrant/tracker_project/nginx_error.log;
+
+          location /static/ {
+              alias /home/vagrant/tracker_project/tracker_project/static/;
+          }
+
+          location / {
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $http_host;
+              proxy_redirect off;
+              if (!-f $request_filename) {
+                  proxy_pass http://tracker_project_upstream;
+                  break;
+              }
+          }
+
+          location /notifications {
+              proxy_pass http://tracker_project_ws_upstream;
+              proxy_set_header Host $host:9000;
+              proxy_redirect off;
+              proxy_buffering off;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+          }
+      }
+    ' > /etc/nginx/conf.d/tracker_project.conf
+    sudo service nginx restart
   SHELL
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL

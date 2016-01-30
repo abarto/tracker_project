@@ -135,13 +135,18 @@ LOGIN_REDIRECT_URL = '/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
-AMPQ_URL = 'amqp://guest:guest@localhost//'
-
 # channels configuration
+
+# CHANNEL_BACKENDS = {
+#     "default": {
+#         "BACKEND": "channels.backends.database.DatabaseChannelBackend",
+#         "ROUTING": "tracker_project.routing.channel_routing",
+#     },
+# }
 
 CHANNEL_BACKENDS = {
     "default": {
-        "BACKEND": "channels.backends.database.DatabaseChannelBackend",
+        "BACKEND": "channels.backends.redis_py.RedisChannelBackend",
         "ROUTING": "tracker_project.routing.channel_routing",
     },
 }

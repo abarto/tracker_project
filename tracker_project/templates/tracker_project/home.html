@@ -71,7 +71,7 @@
     <script type="text/javascript" src="{% static 'js/geojson_utils.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
     <script type="text/javascript">
-        var webSocketUrl = 'ws://localhost:9000/?session_key={{ request.session.session_key }}';
+        var webSocketUrl = 'ws://localhost:8000/notifications/?session_key={{ request.session.session_key }}';
         var incidentFeatureCollectionUrl = "{% url 'tracker:incident-feature-collection' %}";
         var areaOfInterestFeatureCollectionUrl = "{% url 'tracker:area-of-interest-feature-collection' %}";
     </script>
