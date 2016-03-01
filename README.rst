@@ -82,26 +82,17 @@ which runs an interface server with support for WebSockets and a worker.
 Running the application
 =======================
 
-As mentioned in the `django channels <https://github.com/andrewgodwin/channels>`_ in order to run the application with support for WebSockets we need at least and interface server and a worker are needed. During development
+As mentioned in the `django channels <https://github.com/andrewgodwin/channels>`_ in order to run the application with support for WebSockets we need at least and interface server and a worker are needed. Channels includes `daphne <https://github.com/andrewgodwin/daphne>`_ which is an ASGI compatible interface server with support for HTTP and WebSockets. Daphne is run with the following command:
 
 ::
 
-    (venv)$ uwsgi --chdir=/path/to/tracker_project/tracker_project \
-      --module=tracker_project.wsgi:application \
-      --env DJANGO_SETTINGS_MODULE=tracker_project.settings \
-      --master --pidfile=/path/to/tracker_project/tracker_project-master.pid \
-      --http=127.0.0.1:8000 \
-      --processes=5 \
-      --harakiri=20 \
-      --max-requests=5000 \
-      --vacuum \
-      --home=/path/to/tracker_project_venv/
+    (venv)$ daphne tracker_project.asgi:channel_layer
 
-and the WebSocket server:
+We also need to run at least one worker with:
 
 ::
 
-    (venv)$ python ./manage.py runwsserver
+    (venv)$ python ./manage.py runworker
 
 ::
 
