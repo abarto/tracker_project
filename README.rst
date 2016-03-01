@@ -77,16 +77,12 @@ At this point it is possible to run the development server using the following c
 
     (venv)$ python ./manage.py runserver
 
-and
-
-    (venv)$ python ./manage.py runwsserver
-
-for the WebSocket server.
+which runs an interface server with support for WebSockets and a worker.
 
 Running the application
 =======================
 
-As mentioned in the `django channels <https://github.com/andrewgodwin/channels>`_ in order to run the application using websockets we need at least and interface server and a worker are needed. We're going to use uWSGI to serve traditional HTTP requests and act as a worker, and the default WebSocket server that comes with Django channels:
+As mentioned in the `django channels <https://github.com/andrewgodwin/channels>`_ in order to run the application with support for WebSockets we need at least and interface server and a worker are needed. During development
 
 ::
 
