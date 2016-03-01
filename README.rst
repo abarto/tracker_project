@@ -9,7 +9,7 @@ The default configuration uses `PostgreSQL <http://www.postgresql.org/>`_ with t
 Real-time notifications
 =======================
 
-This project created to demonstrate how to use `GeoDjango <https://docs.djangoproject.com/en/1.7/ref/contrib/gis/>`_ as well as sending real-time notifications using `django channels <https://github.com/andrewgodwin/channels>`_ with the `Redis<http://redis.io/>`_ backend.
+This project created to demonstrate how to use `GeoDjango <https://docs.djangoproject.com/en/1.7/ref/contrib/gis/>`_ as well as sending real-time notifications using `django channels <https://github.com/andrewgodwin/channels>`_ with the `Redis <http://redis.io/>`_ backend.
 
 Requirements
 ============
