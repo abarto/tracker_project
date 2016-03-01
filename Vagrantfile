@@ -38,7 +38,7 @@ Vagrant.configure(2) do |config|
 
     cd tracker_project/tracker_project/
 
-    nodeenv --python-virtualenv
+    nodeenv --prebuilt --python-virtualenv
     npm install --global bower
 
     python manage.py migrate
@@ -112,7 +112,7 @@ stopsignal = INT
 process_name = tracker_project_runworker-%(process_num)s
 user = vagrant
 directory = /home/vagrant/tracker_project/tracker_project
-command = /home/vagrant/tracker_project_venv/bin/python /path/to/tracker_project/tracker_project/manage.py runworker
+command = /home/vagrant/tracker_project_venv/bin/python /home/vagrant/tracker_project/tracker_project/manage.py runworker
 numprocs = 2
 autostart = true
 autorestart = true

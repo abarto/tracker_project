@@ -1,8 +1,8 @@
 Django==1.8.9
-git+https://github.com/andrewgodwin/channels.git
-git+https://github.com/andrewgodwin/asgi_redis.git
-git+https://github.com/andrewgodwin/daphne.git
-git+https://github.com/andrewgodwin/asgiref.git
+git+https://github.com/andrewgodwin/channels.git@0.9.3
+git+https://github.com/andrewgodwin/asgi_redis.git@0.8.3
+git+https://github.com/andrewgodwin/daphne.git@0.9
+git+https://github.com/andrewgodwin/asgiref.git@0.9
 autobahn[twisted]==0.11.0
 psycopg2==2.6.1
 django-bower==5.0.4
