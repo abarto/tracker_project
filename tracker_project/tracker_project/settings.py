@@ -138,16 +138,20 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # channels configuration
 
-# CHANNEL_BACKENDS = {
+# CHANNEL_LAYERS = {
 #     "default": {
-#         "BACKEND": "channels.backends.database.DatabaseChannelBackend",
+#         "BACKEND": "channels.database_layer.DatabaseChannelLayer",
 #         "ROUTING": "tracker_project.routing.channel_routing",
 #     },
 # }
 
-CHANNEL_BACKENDS = {
+CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.backends.redis_py.RedisChannelBackend",
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
         "ROUTING": "tracker_project.routing.channel_routing",
     },
 }
+

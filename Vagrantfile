@@ -11,7 +11,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "forwarded_port", guest: 80, host: 8000
   config.vm.network "forwarded_port", guest: 8000, host: 8001
-  config.vm.network "forwarded_port", guest: 9000, host: 9000
 
   config.vm.synced_folder ".", "/home/vagrant/tracker_project/"
 
@@ -54,10 +53,6 @@ upstream tracker_project_upstream {
     server 127.0.0.1:8000 fail_timeout=0;
 }
 
-upstream tracker_project_ws_upstream {
-    server 127.0.0.1:9000 fail_timeout=0;
-}
-
 map $http_upgrade $connection_upgrade {
     default upgrade;
     ""      close;
@@ -87,8 +82,8 @@ server {
     }
 
     location /notifications {
-        proxy_pass http://tracker_project_ws_upstream;
-        proxy_set_header Host $host:9000;
+        proxy_pass http://tracker_project_upstream;
+        proxy_set_header Host $http_host;
         proxy_redirect off;
         proxy_buffering off;
         proxy_http_version 1.1;
@@ -101,27 +96,30 @@ server {
     /usr/sbin/service nginx restart
 
     echo '
-[program:tracker_project_uwsgi]
-user = vagrant
-command = /home/vagrant/tracker_project_venv/bin/uwsgi --chdir=/home/vagrant/tracker_project/tracker_project --module=tracker_project.wsgi:application --env DJANGO_SETTINGS_MODULE=tracker_project.settings --master --pidfile=/home/vagrant/tracker_project/tracker_project-master.pid --http=127.0.0.1:8000 --processes=5 --uid=1000 --gid=1000 --harakiri=20 --max-requests=5000 --vacuum --home=/home/vagrant/tracker_project_venv/
-autostart = true
-autorestart = true
-stderr_logfile = /home/vagrant/tracker_project/uwsgi_stderr.log
-stdout_logfile = /home/vagrant/tracker_project/uwsgi_stdout.log
-stopsignal = INT
-    ' > /etc/supervisor/conf.d/tracker_project_uwsgi.conf
-
-    echo '
-[program:tracker_project_runwsserver]
+[program:tracker_project_daphne]
 user = vagrant
 directory = /home/vagrant/tracker_project/tracker_project
-command = /home/vagrant/tracker_project_venv/bin/python /home/vagrant/tracker_project/tracker_project/manage.py runwsserver
+command = /home/vagrant/tracker_project_venv/bin/daphne tracker_project.asgi:channel_layer
 autostart = true
 autorestart = true
-stderr_logfile = /home/vagrant/tracker_project/runwsserver_stderr.log
-stdout_logfile = /home/vagrant/tracker_project/runwsserver_stdout.log
+stderr_logfile = /home/vagrant/tracker_project/daphne_stderr.log
+stdout_logfile = /home/vagrant/tracker_project/daphne_stdout.log
 stopsignal = INT
-    ' > /etc/supervisor/conf.d/tracker_project_runwsserver.conf
+    ' > /etc/supervisor/conf.d/tracker_project_daphne.conf
+
+    echo '
+[program:tracker_project_runworker]
+process_name = tracker_project_runworker-%(process_num)s
+user = vagrant
+directory = /home/vagrant/tracker_project/tracker_project
+command = /home/vagrant/tracker_project_venv/bin/python /path/to/tracker_project/tracker_project/manage.py runworker
+numprocs = 2
+autostart = true
+autorestart = true
+stderr_logfile = /home/vagrant/tracker_project/runworker_stderr.log
+stdout_logfile = /home/vagrant/tracker_project/runworker_stdout.log
+stopsignal = INT
+    ' > /etc/supervisor/conf.d/tracker_project_runworker.conf
 
     /usr/bin/supervisorctl reload
   SHELL

@@ -1,8 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
+import logging
+
 from json import dumps
 
-from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
@@ -11,8 +12,12 @@ from channels import Group
 from .models import Incident, AreaOfInterest
 
 
+logger = logging.getLogger(__name__)
+
+
 def send_notification(notification):
-    Group("notifications").send({'content': dumps(notification)})
+    logger.info('send_notification. notification = %s', notification)
+    Group("notifications").send({'text': dumps(notification)})
 
 
 @receiver(post_save, sender=Incident)
