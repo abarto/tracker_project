@@ -53,11 +53,22 @@ $(window).load(function() {
     });
 });
 
-$(function() {
-    var socket = new WebSocket(webSocketUrl);
+var socket = null;
+var reconnectInterval = null;
+
+function openWebSocket() {
+    console.log('openWebSocket');
+
+    $("#connection-label").removeClass('label-danger').addClass('label-warning');
+
+    socket = new WebSocket(webSocketUrl);
 
     socket.onopen = function(event) {
         console.log('open', event);
+
+        $("#connection-label").removeClass('label-warning').addClass('label-success');
+        clearInterval(reconnectInterval);
+        reconnectInterval = null;
     }
     socket.onmessage = function(event) {
         console.log('message', event);
@@ -88,8 +99,17 @@ $(function() {
     }
     socket.onclose = function(event) {
         console.log('close', event);
+
+        $("#connection-label").removeClass('label-success').addClass('label-danger');
+        if (!reconnectInterval) {
+            reconnectInterval = setInterval(openWebSocket, 2500);
+        }
     }
     socket.onerror = function(event) {
         console.log('error', event);
     }
+}
+
+$(function() {
+    openWebSocket();
 });
